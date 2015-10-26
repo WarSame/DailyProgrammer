@@ -2,15 +2,13 @@
 #Graeme Cliffe
 
 def findFactors(n):
-    factors=[]
+    factors=set()
     f=2
     while n!=1:
         while (n%f)==0:
-            if f not in factors:
-                factors.append(f)
+            factors.add(f)
             n/=f
         f+=1
-
     return factors
 
 def readInput():
