@@ -5,7 +5,7 @@ import sys, string
 
 def findLongestWord(keyboard):
     #pull all words
-    f = open('enable1.txt', 'r')
+    f = open('../enable1.txt', 'r')
     longestWord=""
     #only allow letters from the keyboard to be used
     disallowedLetters=set(string.lowercase) - set(keyboard)
