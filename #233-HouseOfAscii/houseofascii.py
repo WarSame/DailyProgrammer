@@ -1,20 +1,28 @@
 #The house that ASCII built Challenge
 #Graeme Cliffe
 
-def determineSep(currUnit, adjUnit,align):#call with "*" or " " and "top/left/right/bot"
+def determineSideSep(currUnit, adjUnit,align):#call with "*" or " " and "top/left/right/bot"
     if adjUnit==currUnit:#if they are the same unit, no divider
         return " "
-    else:#if they are not the same unit, we need a divider
+    elif currUnit=="*":#if they are not the same unit, we need a divider
         if align=="vert":
             return "-"
         if align=="horiz":
             return "|"
+    return " "
 
-def printBox(curr,top,left,right,bot):
-    formatString=''
-    topSep,leftSep=determineSep(curr,top,"vert"),determineSep(curr,left,"horiz")
-    botSep,rightSep=determineSep(curr,bot,"vert"),determineSep(curr,right,"horiz")
+def formatBox(curr,adjlist):
+    #returns a list with the three rows of the box of curr
+    #this is based on the adjacent units - similar units don't have borders
+    formatList=[]
+    topleft,top,topright=adjlist[0],adjlist[1],adjlist[2]
+    left,right=adjlist[3],adjlist[4]
+    botleft,bot,botright=adjlist[5],adjlist[6],adjlist[7]
+    topSep,leftSep=determineSideSep(curr,top,"vert"),determineSideSep(curr,left,"horiz")
+    botSep,rightSep=determineSideSep(curr,bot,"vert"),determineSideSep(curr,right,"horiz")
+
     for row in range(0,3):
+        formatString=''
         for element in range(0,5):
             if row==0:
                 formatString+=topSep
@@ -27,12 +35,12 @@ def printBox(curr,top,left,right,bot):
                     formatString+=rightSep
                 else:
                     formatString+=" "
-        formatString+="\n"
-
-    return formatString
+        formatList.append(formatString)
+    return formatList
 
 def pullAdj(levels,x,y):#return list of nearby units
-    #levels is first by descending levels, then left to right
+    #returns from left to right then top to bot
+    #top left...top right...bot left...bot right
     adj=list()
     for xVal in range(-1,2):
         for yVal in range(-1,2):
@@ -47,41 +55,32 @@ def pullAdj(levels,x,y):#return list of nearby units
                     adj.append(" ")
     return adj
 
-def printHouse():
-    pass
+def printHouse(levels,numLevels):
+    for i in range(0,numLevels):
+        printRow(i,levels)
 
-def getRowColumnLists(levels,numLevels):#break levels into columns and rows
-    rowList,columnList=list(),list()
-    numColumns=len(levels[-1])
-    #get rows
-    for row in range(0,numLevels):#iterate through levels
-        currRow=list()
-        for column in range(0,numColumns):
-            try:
-                currRow.append(levels[row][column])
-            except IndexError:
-                    currRow.append(" ")
-        rowList.append(currRow)
-        
-    #get columns
-    for column in range(0,numColumns):
-        currCol=list()
-        for row in rowList:
-            try:
-                currCol.append(row[column])
-            except IndexError:
-                currCol.append(" ")
-        columnList.append(currCol)
-    return rowList,columnList
-
-def main():
+def getInput():
+    #Take input from user - number of levels, then level layout
     numLevels=int(raw_input())
     levels=[]
     for i in range(0,numLevels):
         levels.append(list(raw_input()))
-    #rowList,columnList=getRowColumnLists(levels,numLevels)
-    print pullAdj(levels,0,0)#levels,x,y
-    #above,left,right,down=' ',' ',' ',' '
-    #print printBox('*',above,left,right,down)
+    return numLevels,levels
+
+def printRow(n,levels):
+    #Print a row given the row number and the layout array
+    rowStrings=['','','']
+    for i in range(len(levels[n])):
+        boxLists=formatBox(levels[n][i],pullAdj(levels,n,i))#list of sub-row strings
+        rowStrings[0]+=boxLists[0]
+        rowStrings[1]+=boxLists[1]
+        rowStrings[2]+=boxLists[2]
+    for i in rowStrings:
+        print i
+
+def main():
+    numLevels,levels=getInput()
+
+    printHouse(levels,numLevels)
 
 main()
