@@ -4,7 +4,7 @@
 import random
 totalGuesses=4
 
-def getWordList(wordLen,numWord):
+def getWordList(wordLen,numWord):#returns randomized words from enable1.txt
     wordList=[]
     f=open("../enable1.txt","r")
 
@@ -15,7 +15,7 @@ def getWordList(wordLen,numWord):
     f.close()
     return random.sample(wordList,numWord)
 
-def getGuess(currGuesses):
+def getGuess(currGuesses):#print number of guesses left while asking for input
     return raw_input("Guess ("+str(totalGuesses-currGuesses)+" left)? ").upper()
 
 def findMatches(guess,answer):#find number of shared letters between words
@@ -27,7 +27,8 @@ def findMatches(guess,answer):#find number of shared letters between words
 
 def main():
     difLev=int(raw_input("Difficulty (1-5)? "))
-    wordLen,numWord=3+int(2.5*difLev),2+int(2.5*difLev)
+    difMod={1:(4,5,6),2:(7,8),3:(9,10,11),4:(12,13),5:(14,15)}
+    wordLen,numWord=random.choice(difMod[difLev]),random.choice(difMod[difLev])
     #get list of numWord random words of wordLen from enable1.txt
     wordList=getWordList(wordLen,numWord)
     for i in wordList:
