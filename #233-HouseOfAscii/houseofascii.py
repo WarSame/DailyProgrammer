@@ -24,11 +24,11 @@ def formatBox(curr,adjlist):
     for row in range(0,3):
         formatString=''
         for element in range(0,5):
-            if row==0:
+            if row==0:#top row
                 formatString+=topSep
-            if row==2:
+            if row==2:#bot row
                 formatString+=botSep
-            if row==1:
+            if row==1:#mid row
                 if element==0:
                     formatString+=leftSep
                 elif element==4:
@@ -88,11 +88,7 @@ def printHouse(levels,numLevels):
             #if current level and previous have different layouts
             #then don't print the seperators
             printTop=True
-        if i+1>numLevels-1:
-            printBot=True
-        elif levels[i]!=levels[i+1]:
-            #if current level and next have different layouts
-            #don't print seperators
+        if i+1>numLevels-1:#only print the bottom for the bottom level
             printBot=True
         printRow(i,levels,printTop,printBot)
 
