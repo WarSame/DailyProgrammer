@@ -72,4 +72,15 @@ def dfs(parentRunTot,parentSum):
         return dfsChildren(parentRunTot,parentSum)
 
 initNum=int(raw_input())
-print dfs(initNum,0)
+result=None
+try:
+    result=dfs(initNum,0)
+    result=list(reversed(result))
+except:
+    result=None
+if result:
+    print "Additions and subtractions in order:"
+    for i in result:
+        print i,
+else:
+    print "Impossible!"
