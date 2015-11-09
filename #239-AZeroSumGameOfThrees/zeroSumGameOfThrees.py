@@ -13,18 +13,6 @@ def isInTable(nodeTot,nodeSum):
         memoTable[(nodeTot,nodeSum)]=True
         return False
 
-def dfsChildren(parentRunTot,parentSum):#spin children off of parent node
-    for childVal in children:#Attempt all of the children branches
-        childSum=parentSum+childVal
-        childRunTot=parentRunTot+childVal
-        
-        additionList=dfs(childRunTot,childSum)
-        if additionList:#If this child returns True, then append and return up
-
-            additionList.append(childVal)
-            return additionList
-    return None#No case matched
-
 #Use a DFS. If we reach more than 3*initial number a solution is impossible
 def dfs(parentRunTot,parentSum):
     #If we've already hit this total/sum pair, then
@@ -52,8 +40,14 @@ def dfs(parentRunTot,parentSum):
             retList.append("/3")
         return retList
     #If we aren't at the base case, but no problems, keep checking children
-    else:
-        return dfsChildren(parentRunTot,parentSum)
+    for childVal in children:#Attempt all of the children branches
+        childSum=parentSum+childVal
+        childRunTot=parentRunTot+childVal
+        additionList=dfs(childRunTot,childSum)
+        if additionList:#If this child returns True, then append and return up
+            additionList.append(childVal)
+            return additionList
+    return None#No case matched
 
 initNum=int(raw_input())
 result=None
