@@ -16,7 +16,7 @@ def getFrameScore(frame):
     return frameScore
 
 def getRawScore(currRoll,prevRoll):
-    #Get score of roll
+    #Get score of a specific roll
     if currRoll in string.digits:
         return int(currRoll)
     if currRoll=="X":
