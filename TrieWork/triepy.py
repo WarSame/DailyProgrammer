@@ -60,17 +60,18 @@ class Trie:
     def get_children_leaves(self, curr_node):
         leaves = []
         for child in curr_node.children.keys():
-            print "Child is "+child
             child_node = curr_node.children[child]
 
             # Add children leaves to our leaves collection
             # Get the leaves of our children
-            leaves = self.get_children_leaves(child_node)
+            child_leaves = self.get_children_leaves(child_node)
             # Append the current letter in front of all child leaves
-            for i in range(0,len(leaves)):
-                leaves[i] = child + leaves[i]
+            for i in range(0,len(child_leaves)):
+                child_leaves[i] = child + child_leaves[i]
+            leaves += child_leaves
 
             if child_node.leaf:
+            # If we get a leaf, start a new
                 leaves.append(child)
         # Return leaves up
         return leaves
