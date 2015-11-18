@@ -18,10 +18,6 @@ class Node:
         if char in self.children:
             return self.children[char]
 
-    def get_children(self):
-        for i in self.children:
-            print i
-'''
     def __str__(self):
         node_string = self.word
         if not self.children.keys():
@@ -30,7 +26,7 @@ class Node:
         for char in self.children.keys():
             node_string += char + "\t"
         return node_string
-'''
+
 
 class Trie:
     def __init__(self, words):
@@ -39,8 +35,13 @@ class Trie:
         for word in words:
             self.insert_word(word)
 
-    def print_children(self, stub):
-        # Given a stub of a word, print all words following from it
+    def get_trie(self):
+        # Return a list containing the entire trie
+        curr_node = self.start_node
+        return self.get_children_strings(curr_node)
+
+    def get_children(self, stub):
+        # Return a list containing all the words in the trie branching from the stub
         curr_node = self.start_node
         for char in stub:
             child = curr_node.get_child(char)
@@ -52,26 +53,26 @@ class Trie:
                 return ""
         # We now have our stub node and can find all
         # Its descendants, and return those
-        leaves = self.get_children_leaves(curr_node)
-        for i in range(0,len(leaves)):
+        leaves = self.get_children_strings(curr_node)
+        for i in range(0, len(leaves)):
             leaves[i] = stub + leaves[i]
         return leaves
 
-    def get_children_leaves(self, curr_node):
+    def get_children_strings(self, curr_node):
+        # Given a node, return all strings branching from that node in a list
         leaves = []
         for child in curr_node.children.keys():
-            child_node = curr_node.children[child]
-
+            child_node = curr_node.get_child(child)
             # Add children leaves to our leaves collection
-            # Get the leaves of our children
-            child_leaves = self.get_children_leaves(child_node)
+            child_leaves = self.get_children_strings(child_node)
             # Append the current letter in front of all child leaves
-            for i in range(0,len(child_leaves)):
+            for i in range(0, len(child_leaves)):
                 child_leaves[i] = child + child_leaves[i]
+            # Add our children leaves to the entire set of leaves
             leaves += child_leaves
 
             if child_node.leaf:
-            # If we get a leaf, start a new
+                # If we get a leaf, start a new
                 leaves.append(child)
         # Return leaves up
         return leaves
@@ -89,7 +90,7 @@ class Trie:
                 # If not, make one
                 new_node = Node(curr_node.word)
                 curr_node.set_child(char, new_node)
-                #And move to that new one
+                # And move to that new one
                 curr_node = new_node
         # Make the last character in the word a leaf
         curr_node.leaf = True
@@ -109,7 +110,7 @@ class Trie:
         return curr_node.leaf
 
     def is_in_trie(self, word):
-        # Given a word, find if it is in the trie
+        # Given a char string, find if it is in the trie - word or word prefix
         curr_node = self.start_node
         for char in word:
             child = curr_node.get_child(char)
@@ -121,18 +122,19 @@ class Trie:
         return True
 
 
-def main():
-    '''
-    f = open("../enable1.txt","r")
-    words=[]
+def build_trie_from_enable():
+    f = open("../enable1.txt", "r")
+    words = []
     for line in f.readlines():
         words.append(line.strip("\n"))
-    tr = Trie(words)
-    '''
-    tr = Trie(["this","theory","that"])
-    result = tr.print_children("th")
-    print result
+    return Trie(words)
 
+
+def main():
+    tr = build_trie_from_enable()
+    result = tr.get_trie()
+    for i in result:
+        print i
 
 
 main()
