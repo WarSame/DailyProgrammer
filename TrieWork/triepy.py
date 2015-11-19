@@ -6,8 +6,7 @@ class Node:
     # Node - element in the trie
     # May have children nodes. May be a leaf.
     # Must be on the path to some leaf
-    def __init__(self, word):
-        self.word = word
+    def __init__(self):
         self.children = {}
         self.leaf = False
 
@@ -19,7 +18,7 @@ class Node:
             return self.children[char]
 
     def __str__(self):
-        node_string = self.word
+        node_string = ""
         if not self.children.keys():
             return node_string
         node_string += "\nConnected to:"
@@ -31,7 +30,7 @@ class Node:
 class Trie:
     def __init__(self, words):
         # Given a list of words insert all words into trie
-        self.start_node = Node("")
+        self.start_node = Node()
         for word in words:
             self.insert_word(word)
 
@@ -88,7 +87,7 @@ class Trie:
                 curr_node = child
             else:
                 # If not, make one
-                new_node = Node(curr_node.word)
+                new_node = Node()
                 curr_node.set_child(char, new_node)
                 # And move to that new one
                 curr_node = new_node
@@ -121,6 +120,28 @@ class Trie:
                 return False
         return True
 
+    def remove_word(self, word):
+        # Return true if able to remove word
+        if not self.is_in_trie(word):
+            return False
+        return self.remove_word_recursive(word, self.start_node, 0)
+
+    def remove_word_recursive(self, word, parent_node, depth):
+        # If we hit the bottom letter delete the bottom node and return up
+        if len(word) == depth:
+            # No matter what, remove the word as a leaf
+            parent_node.leaf = False
+            # If there are no children for our node, then delete it
+            if not parent_node.get_child(word[depth-1]):
+                del parent_node
+            return True
+        # If we are at a non bottom node, keep going
+        self.remove_word_recursive(word, parent_node.get_child(word[depth]), depth + 1)
+        # Then delete the child node if it has only one child and is not a leaf
+        if len(parent_node.children) == 0 and not parent_node.leaf:
+            del parent_node
+        return True
+
 
 def build_trie_from_enable():
     f = open("../enable1.txt", "r")
@@ -132,6 +153,7 @@ def build_trie_from_enable():
 
 def main():
     tr = build_trie_from_enable()
+    print tr.remove_word("zygote")
     result = tr.get_trie()
     for i in result:
         print i
